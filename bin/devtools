@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# ==================================
+# DevTools CLI Dispatcher
+# ==================================
+# Info:
+#   Entry-point for @kingzyphor/devtools-cli.
+#   Provides 'devtools' and 'dt' commands (both reference this file).
+# Author:
+#   KingZyphor — sole owner of this CLI and its derivatives unless otherwise stated.
+# License:
+#   MIT (see LICENSE)
+# ==================================
+
+set -euo pipefail
+IFS=$'\n\t'
+
+# ==================================
+# ASCII Banner (for professional CLI header)
+# ==================================
+# Prints a small banner when run without args (kept compact).
+DEVTOOLS_BANNER='
+  ____   _____ __     __ _______              _     
+ |  _ \ | ____|\ \   / /|__   __| ___   ___  | | ___ 
+ | | | ||  _|   \ \ / /    | |   / _ \ / _ \ | |/ __|
+ | |_| || |___   \ V /     | |  | (_) | (_) || |\__ \
+ |____/ |_____|   \_/      |_|   \___/ \___/ |_||___/
+
+                     D E V T O O L S   C L I
+'
+
+# ==================================
+# Resolve base directory (works when installed via npm or used locally)
+# ==================================
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+BASEDIR="$(cd -P "$(dirname "$SOURCE")/.." >/dev/null 2>&1 && pwd)"
+COMMANDS_DIR="$BASEDIR/Terminal Commands"
+
+# ==================================
+# Help text
+# ==================================
+show_help() {
+cat <<'EOF'
+DevTools CLI (@kingzyphor/devtools-cli)
+
+Usage:
+  devtools <command> [args...]
+  dt <command> [args...]
+
+Commands:
+  git-autopush [options] [paths...]     Automated git add/commit/push helper
+  debug-suite <subcmd> [args...]       Debugging utilities (logs|port|deps|ps|env)
+  sys-info                              System & environment diagnostics
+  repo-cleaner [--apply|--dry-run]      Organize/clean repo files
+  branch-sync <branch> [options]        Sync local branch with remote
+  error-trace <pid|run> [args...]       Gather traces for PID or run command under trace
+  install                               Run packaged installer (install.sh)
+  help                                  Show this help
+
+Examples:
+  devtools git-autopush -b main -m "chore: update"
+  devtools debug-suite deps
+  dt repo-cleaner --dry-run
+EOF
+}
+
+# If no args, print banner + help
+if [ $# -eq 0 ]; then
+  printf '%s\n' "$DEVTOOLS_BANNER"
+  show_help
+  exit 0
+fi
+
+cmd="$1"; shift
+
+case "$cmd" in
+  git-autopush) exec "$COMMANDS_DIR/git-autopush.sh" "$@" ;;
+  debug-suite) exec "$COMMANDS_DIR/debug-suite.sh" "$@" ;;
+  sys-info) exec "$COMMANDS_DIR/sys-info.sh" "$@" ;;
+  repo-cleaner) exec "$COMMANDS_DIR/repo-cleaner.sh" "$@" ;;
+  branch-sync) exec "$COMMANDS_DIR/branch-sync.sh" "$@" ;;
+  error-trace) exec "$COMMANDS_DIR/error-trace.sh" "$@" ;;
+  install) exec "$BASEDIR/install.sh" "$@" ;;
+  -h|--help|help) show_help ;;
+  *)
+    printf 'Unknown command: %s\n\n' "$cmd" >&2
+    show_help
+    exit 2
+    ;;
+esac

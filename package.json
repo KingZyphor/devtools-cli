@@ -1,0 +1,42 @@
+{
+  "name": "@kingzyphor/devtools-cli",
+  "version": "1.0.0",
+  "description": "DevTools CLI — cross-platform bash-based developer utilities for repository maintenance, debugging and automation.",
+  "main": "bin/devtools",
+  "bin": {
+    "devtools": "bin/devtools",
+    "dt": "bin/devtools"
+  },
+  "scripts": {
+    "test": "echo \"No JS tests; scripts are bash-based\" && exit 0",
+    "lint:shell": "shellcheck -x \"Terminal Commands\"/*.sh || true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KingZyphor/devtools-cli.git"
+  },
+  "keywords": [
+    "devtools",
+    "cli",
+    "bash",
+    "devops",
+    "debug",
+    "repository",
+    "automation"
+  ],
+  "author": "KingZyphor <mediazyphor@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "bin/",
+    "Terminal-Commands/",
+    "install.sh",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=12"
+  }
+}

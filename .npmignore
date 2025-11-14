@@ -1,0 +1,11 @@
+# Exclude development and CI files from published package
+.git/
+.github/
+tests/
+.vscode/
+*.log
+CONTRIBUTING.md
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+.env*
